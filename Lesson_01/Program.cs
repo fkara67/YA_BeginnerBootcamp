@@ -12,7 +12,7 @@ account1.SetBalance(1000);
 account1.Withdraw(1500);
 account1.Withdraw(550);
 
-Console.WriteLine(account1.ShowBalance());
+Console.WriteLine(account1.GetBalance());
 
 //Console.WriteLine(account1.Balance);
 
@@ -39,9 +39,9 @@ class Account
             Balance = balance;
     }
 
-    public string ShowBalance() //Geri dönüş tipi Decimal olan bir metot ile değiştirilecek
+    public decimal GetBalance() //Geri dönüş tipi Decimal olan bir metot ile değiştirilecek
     {
-        return $"Balance: {Balance}";
+        return Balance;
     }
 }
 
