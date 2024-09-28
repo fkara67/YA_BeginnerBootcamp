@@ -1,5 +1,4 @@
-﻿
-namespace Lesson_01.Models;
+﻿namespace Lesson_01.Models;
 
 public class Account
 {
@@ -8,6 +7,9 @@ public class Account
     public string PhoneNumber { get; set; }
     public string IBAN { get; set; }
     private decimal Balance { get; set; } //1000
+
+    public string Email { get; set; }
+    public string Password { get; set; }
 
     //15
     //15/1

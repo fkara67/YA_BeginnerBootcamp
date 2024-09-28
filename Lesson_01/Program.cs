@@ -1,5 +1,5 @@
-﻿using Lesson_01.Models;
-
+﻿using System.Data.Common;
+using Lesson_01.Models;
 
 Console.WriteLine("Bank App");
 
@@ -19,20 +19,66 @@ account2.PhoneNumber = "987654321";
 account2.IBAN = "TR987654321";
 accounts.Add(account2);
 
-TransferMoney(account1, account2, 500);
+string loggedInEmail = "";
+bool isLoggedIn = false;
 
-Console.WriteLine($"John's Balance: {account1.GetBalance()}");
-Console.WriteLine($"Jane's Balance: {account2.GetBalance()}");
+WriteLoginMenu();
+string choise = Console.ReadLine();
 
-// account1.Withdraw(750);
-// account1.Withdraw(300);
-// account1.Withdraw(10000);
-// account1.Withdraw(750);
+if (choise == "1")
+{
+    Console.WriteLine("Enter your Email:");
+    string email = Console.ReadLine();
 
-Console.WriteLine($"Balance: {account1.GetBalance()}");
+    Console.WriteLine("Enter your Password:");
+    string password = Console.ReadLine();
+
+    LoginAccount(email, password);
+}
+
+
+
+void WriteLoginMenu()
+{
+    Console.WriteLine("Choose an option:");
+    Console.WriteLine("1 - Login");
+    Console.WriteLine("2 - Sign Up");
+}
+
+void WriteMainMenu()
+{
+    Console.WriteLine("Choose an option:");
+    Console.WriteLine("1 - Deposit");
+    Console.WriteLine("2 - Withdraw");
+    Console.WriteLine("3 - Transfer");
+    Console.WriteLine("4 - Log Out");
+}
 
 void TransferMoney(Account sender, Account receiver, decimal amount)
 {
     decimal sendAmount = sender.Withdraw(amount);
     receiver.Deposit(sendAmount);
+}
+
+void LoginAccount(string email, string password)
+{
+    for (int i = 0; i < accounts.Count; i++)
+    {
+        if (accounts[i].Email == email)
+        {
+            if (accounts[i].Password == password)
+            {
+                isLoggedIn = true;
+                loggedInEmail = email;
+            }
+            else
+            {
+                Console.WriteLine("Invalid Password");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid Email");
+        }
+    }
 }
