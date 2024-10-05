@@ -14,15 +14,30 @@ public class Account
     //15
     //15/1
 
-    public Account()
+    Random random = new();
+
+
+    public Account(string email, string password)
     {
         Balance = 100;
+        Email = email;
+        Password = password;
     }
 
-    public Account(decimal balance)
+    public Account(decimal balance, string email, string password, string firstName, string lastName, string phoneNumber)
     {
         if (balance <= 1000)
             Balance = balance;
+
+        Email = email;
+        Password = password;
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber;
+
+        IBAN = $"TR{random.Next(100_000_000, 999_999_999)}";
+
+        Console.WriteLine($"{FirstName} Account created with IBAN: {IBAN}");
     }
 
     // public void SetBalance(decimal balance)
@@ -42,26 +57,27 @@ public class Account
     }
     public decimal Withdraw(decimal amount) //1500
     {
-        //Balance: 1000
+        //Balance: 0
         //Amount: 1500
         if (Balance >= amount)
         {
             Balance -= amount;
+
+            // Console.WriteLine($"Withdraw successful, new balance is: {Balance}");
+
             return amount;
         }
         else if (Balance != 0)
         {
-            Console.WriteLine($"Insufficient balance but you withdraw this amount: {Balance}");
-            decimal tempBalance = Balance;
-            Balance = 0;
+            // Console.WriteLine($"Insufficient balance but you withdraw this amount: {Balance}");
+            decimal tempBalance = Balance; //1000
+            Balance = 0; //0
             return tempBalance;
         }
         else
         {
-            System.Console.WriteLine("Insufficient balance");
+            // Console.WriteLine("Insufficient balance");
             return 0;
         }
-        //End Balance: 1000
-
     }
 }
