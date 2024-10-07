@@ -1,4 +1,6 @@
-﻿namespace Lesson_01.Models;
+﻿using Lesson_01.Helpers;
+
+namespace Lesson_01.Models;
 
 public class Account
 {
@@ -6,7 +8,8 @@ public class Account
     public string LastName { get; set; }
     public string PhoneNumber { get; set; }
     public string IBAN { get; set; }
-    private decimal Balance { get; set; } //1000
+    private decimal Balance { get; set; }
+    // public decimal Balance { get; private set; }
 
     public string Email { get; set; }
     public string Password { get; set; }
@@ -29,7 +32,7 @@ public class Account
         if (balance <= 1000)
             Balance = balance;
 
-        Email = email;
+        Email = email.ToLower();
         Password = password;
         FirstName = firstName;
         LastName = lastName;
@@ -57,9 +60,13 @@ public class Account
     }
     public decimal Withdraw(decimal amount) //1500
     {
-        //Balance: 0
-        //Amount: 1500
-        if (Balance >= amount)
+        //Balance: 1000
+        //Amount: -1500
+        if (amount <= 0)
+        {
+            return 0;
+        }
+        else if (Balance >= amount)
         {
             Balance -= amount;
 
