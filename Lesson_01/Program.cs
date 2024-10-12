@@ -1,15 +1,13 @@
 ﻿using Lesson_01.Helpers;
 using Lesson_01.Models;
 
+
 Console.WriteLine("Bank App");
 
 List<Account> accounts = new();
 
 Account account1 = new(300, "john@gmail.com", "123456", "John", "Doe", "123456789");
 accounts.Add(account1);
-
-// account1.Balance = 1_000_000; //yazma - set
-// Console.WriteLine(account1.Balance); //okuma - get
 
 Account account2 = new(1000, "jane@gmail.com", "4321", "Jane", "Doe", "987654321");
 accounts.Add(account2);
@@ -21,38 +19,28 @@ while (true)
 {
     if (!isLoggedIn)
     {
-        WriteLoginMenu();
-        string choise = Console.ReadLine();
+        string choise = InputHelper.GetInput(WriteLoginMenu());
 
         if (choise == "1")
         {
-            Console.WriteLine("Enter your Email:");
-            string email = Console.ReadLine();
+            string email = InputHelper.GetInput("Enter your Email:");
 
-            Console.WriteLine("Enter your Password:");
-            string password = Console.ReadLine();
+            string password = InputHelper.GetInput("Enter your Password:");
 
             LoginAccount(email, password);
         }
 
         else if (choise == "2")
         {
-            // Console.WriteLine("Enter your Email:");
-            // string email = Console.ReadLine();
-
             string email = InputHelper.GetInput("Enter your Email:");
 
-            Console.WriteLine("Enter your Password:");
-            string password = Console.ReadLine();
+            string password = InputHelper.GetInput("Enter your Password:");
 
-            Console.WriteLine("Enter your First Name:");
-            string firstName = Console.ReadLine();
+            string firstName = InputHelper.GetTextOnlyInput("Enter your First Name:");
 
-            Console.WriteLine("Enter your Last Name:");
-            string lastName = Console.ReadLine();
+            string lastName = InputHelper.GetTextOnlyInput("Enter your Last Name:");
 
-            Console.WriteLine("Enter your Phone Number:");
-            string phoneNumber = Console.ReadLine();
+            string phoneNumber = InputHelper.GetNumberOnlyInput("Enter your Phone Number:");
 
             Account accountToAdd = new(100, email, password, firstName, lastName, phoneNumber);
 
@@ -63,13 +51,13 @@ while (true)
     }
     else
     {
-        WriteMainMenu();
-        string choise = Console.ReadLine();
+        string choise = InputHelper.GetInput(WriteMainMenu());
 
         if (choise == "1")
         {
-            Console.WriteLine("Enter the amount you want to deposit:");
-            decimal amount = Convert.ToDecimal(Console.ReadLine());
+            decimal amount = Convert.ToDecimal(
+                InputHelper.GetNumberOnlyInput("Enter the amount you want to deposit:")
+                );
 
             if (loggedInAccount != null && amount > 0)
             {
@@ -83,8 +71,7 @@ while (true)
         }
         else if (choise == "2")
         {
-            Console.WriteLine("Enter the amount you want to withdraw:");
-            decimal withdrawAmount = Convert.ToDecimal(Console.ReadLine());
+            decimal withdrawAmount = Convert.ToDecimal(InputHelper.GetNumberOnlyInput("Enter the amount you want to withdraw:"));
 
             decimal withdrawResult = loggedInAccount.Withdraw(withdrawAmount);
 
@@ -103,24 +90,21 @@ while (true)
         }
         else if (choise == "3")
         {
-            Console.WriteLine("Enter the IBAN you want to transfer to:");
-            string iban = Console.ReadLine();
+            string iban = InputHelper.GetInput("Enter the IBAN you want to transfer to:");
 
-            Console.WriteLine("Enter the amount you want to transfer:");
-            decimal withdrawAmount = Convert.ToDecimal(Console.ReadLine());
+            decimal withdrawAmount = Convert.ToDecimal(InputHelper.GetNumberOnlyInput("Enter the amount you want to transfer:"));
 
-            Account receiverAccount = null;
+            Account receiverAccount = accounts.FirstOrDefault(a => a.IBAN == iban);
 
-            for (int i = 0; i < accounts.Count; i++)
+            if (receiverAccount == null)
             {
-                if (accounts[i].IBAN == iban)
-                {
-                    receiverAccount = accounts[i];
-                    break;
-                }
+                Console.WriteLine("Receiver account not found");
+            }
+            else
+            {
+                TransferMoney(loggedInAccount, receiverAccount, withdrawAmount);
             }
 
-            TransferMoney(loggedInAccount, receiverAccount, withdrawAmount);
         }
         else if (choise == "4")
         {
@@ -129,8 +113,7 @@ while (true)
         }
         else if (choise == "5")
         {
-            Console.WriteLine("Enter your current password:");
-            string currentPassword = Console.ReadLine();
+            string currentPassword = InputHelper.GetInput("Enter your current password:");
 
             if (currentPassword != loggedInAccount.Password)
             {
@@ -140,20 +123,25 @@ while (true)
                 continue;
             }
 
-            Console.WriteLine("Enter your new password:");
-            string newPassword = Console.ReadLine();
+            string newPassword = InputHelper.GetInput("Enter your new password:");
 
-            Console.WriteLine("Enter your new again password:");
-            string newPasswordAgain = Console.ReadLine();
+            string newPasswordAgain = InputHelper.GetInput("Enter your new again password:");
 
             if (newPassword != newPasswordAgain)
             {
                 Console.WriteLine("Passwords do not match");
-                continue;
             }
 
-            loggedInAccount.Password = newPassword;
-            Console.WriteLine("Password changed successfully");
+            else if (newPassword == currentPassword)
+            {
+                Console.WriteLine("New password cannot be the same as the old one.");
+            }
+            else
+            {
+                loggedInAccount.Password = newPassword;
+                Console.WriteLine("Password changed successfully");
+            }
+
         }
         else if (choise == "6")
         {
@@ -166,28 +154,18 @@ while (true)
 
 
 
-void WriteLoginMenu()
+string WriteLoginMenu()
 {
-    Console.WriteLine("Choose an option:");
-    Console.WriteLine("1 - Login");
-    Console.WriteLine("2 - Sign Up");
+    return "1 - Login\n2 - Sign Up\nChoose an option:";
 }
 
-void WriteMainMenu()
+string WriteMainMenu()
 {
-    Console.WriteLine("Choose an option:");
-    Console.WriteLine("1 - Deposit");
-    Console.WriteLine("2 - Withdraw");
-    Console.WriteLine("3 - Transfer");
-    Console.WriteLine("4 - Show Balance");
-    Console.WriteLine("5 - Change Password");
-    Console.WriteLine("6 - Log Out");
+    return "1 - Deposit\n2 - Withdraw\n3 - Transfer\n4 - Show Balance\n5 - Change Password\n6 - Log Out\nChoose an option:";
 }
 
 void TransferMoney(Account sender, Account receiver, decimal amount)
 {
-    //Tuana -> 1000 - transfer: "-1500" - john
-    //John -> 500 - transfer: "-1500" - Tuana
     decimal sendAmount = sender.Withdraw(amount);
     receiver.Deposit(sendAmount);
 
@@ -196,43 +174,20 @@ void TransferMoney(Account sender, Account receiver, decimal amount)
 
 void LoginAccount(string email, string password)
 {
-    bool isAccountExist = false;
-    bool isPasswordCorrect = false;
+    Account account = accounts.FirstOrDefault(a => a.Email == email);
 
-    for (int i = 0; i < accounts.Count; i++)
-    {
-        if (accounts[i].Email == email)
-        {
-            isAccountExist = true;
-            if (accounts[i].Password == password)
-            {
-                isPasswordCorrect = true;
-                isLoggedIn = true;
-                loggedInAccount = accounts[i];
-                break;
-            }
-            else
-            {
-                isPasswordCorrect = false;
-            }
-            break;
-        }
-        else
-        {
-            isAccountExist = false;
-        }
-    }
-
-    if (!isAccountExist)
+    if (account == null)
     {
         Console.WriteLine("Account does not exist");
     }
-    else if (!isPasswordCorrect)
+    else if (account.Password != password)
     {
         Console.WriteLine("Password is incorrect");
     }
     else
     {
+        isLoggedIn = true;
+        loggedInAccount = account;
         Console.WriteLine("Login successful");
     }
 

@@ -9,33 +9,29 @@ public class Account
     public string PhoneNumber { get; set; }
     public string IBAN { get; set; }
     private decimal Balance { get; set; }
-    // public decimal Balance { get; private set; }
 
     public string Email { get; set; }
     public string Password { get; set; }
 
-    //15
-    //15/1
-
     Random random = new();
-
 
     public Account(string email, string password)
     {
         Balance = 100;
-        Email = email;
+        Email = email.ToLower();
         Password = password;
     }
 
     public Account(decimal balance, string email, string password, string firstName, string lastName, string phoneNumber)
     {
-        if (balance <= 1000)
-            Balance = balance;
+        Balance = Math.Min(balance, 1000);
 
         Email = email.ToLower();
         Password = password;
+
         FirstName = firstName;
         LastName = lastName;
+
         PhoneNumber = phoneNumber;
 
         IBAN = $"TR{random.Next(100_000_000, 999_999_999)}";
@@ -43,13 +39,7 @@ public class Account
         Console.WriteLine($"{FirstName} Account created with IBAN: {IBAN}");
     }
 
-    // public void SetBalance(decimal balance)
-    // {
-    //     if (balance <= 1000)
-    //         Balance = balance;
-    // }
-
-    public decimal GetBalance() //Geri dönüş tipi Decimal olan bir metot ile değiştirilecek
+    public decimal GetBalance()
     {
         return Balance;
     }
@@ -58,10 +48,8 @@ public class Account
     {
         Balance += amount;
     }
-    public decimal Withdraw(decimal amount) //1500
+    public decimal Withdraw(decimal amount)
     {
-        //Balance: 1000
-        //Amount: -1500
         if (amount <= 0)
         {
             return 0;
@@ -70,20 +58,16 @@ public class Account
         {
             Balance -= amount;
 
-            // Console.WriteLine($"Withdraw successful, new balance is: {Balance}");
-
             return amount;
         }
         else if (Balance != 0)
         {
-            // Console.WriteLine($"Insufficient balance but you withdraw this amount: {Balance}");
-            decimal tempBalance = Balance; //1000
-            Balance = 0; //0
+            decimal tempBalance = Balance;
+            Balance = 0;
             return tempBalance;
         }
         else
         {
-            // Console.WriteLine("Insufficient balance");
             return 0;
         }
     }
