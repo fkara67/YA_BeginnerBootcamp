@@ -167,6 +167,13 @@ string WriteMainMenu()
 void TransferMoney(Account sender, Account receiver, decimal amount)
 {
     decimal sendAmount = sender.Withdraw(amount);
+
+    if (sendAmount == 0)
+    {
+        Console.WriteLine("Insufficient balance to transfer");
+        return;
+    }
+
     receiver.Deposit(sendAmount);
 
     Console.WriteLine($"Transfer successful, new balance is: {sender.GetBalance()}");
